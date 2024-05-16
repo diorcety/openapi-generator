@@ -187,7 +187,7 @@ public abstract class AbstractPythonCodegen extends DefaultCodegen implements Co
         if (this.reservedWordsMappings().containsKey(name)) {
             return this.reservedWordsMappings().get(name);
         }
-        return "_" + name;
+        return name + "_";
     }
 
 
