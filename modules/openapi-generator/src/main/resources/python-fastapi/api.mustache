@@ -21,6 +21,8 @@ from fastapi import (  # noqa: F401
     status,
 )
 
+from fastapi.dependencies.utils import is_coroutine_callable
+
 from {{modelPackage}}.extra_models import TokenModel  # noqa: F401
 {{#imports}}
 {{import}}
@@ -65,7 +67,10 @@ async def {{operationId}}(
     {{/hasAuthMethods}}
 ) -> {{returnType}}{{^returnType}}None{{/returnType}}:
     {{#notes}}"""{{.}}"""
-    return Base{{classname}}.subclasses[0]().{{operationId}}({{#allParams}}{{>impl_argument}}{{^-last}}, {{/-last}}{{/allParams}}){{/notes}}{{^notes}}...{{/notes}}
+    if is_coroutine_callable(Base{{classname}}.subclasses[0]().{{operationId}}):
+        return await Base{{classname}}.subclasses[0]().{{operationId}}({{#allParams}}{{>impl_argument}}{{^-last}}, {{/-last}}{{/allParams}})
+    else:
+        return Base{{classname}}.subclasses[0]().{{operationId}}({{#allParams}}{{>impl_argument}}{{^-last}}, {{/-last}}{{/allParams}}){{/notes}}{{^notes}}...{{/notes}}
 {{^-last}}
 
 
